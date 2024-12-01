@@ -25,6 +25,7 @@ const userSchema = new Schema<TUser>({
     type: String,
     required: true,
     minlength: 8,
+    select: 0,
   },
   phone: {
     type: String,
@@ -54,6 +55,11 @@ userSchema.pre('save', async function (next) {
   } else {
     next();
   }
+});
+
+userSchema.post('save', function (doc, next) {
+  doc.password = '********';
+  next();
 });
 
 export const User = model<TUser>('User', userSchema);
