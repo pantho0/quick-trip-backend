@@ -1,18 +1,17 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RequestHandler } from 'express';
 import { UserServices } from './user.service';
+import catchAsync from '../../utils/catchAsync';
 
-const createUser: RequestHandler = async (req, res) => {
-  try {
-    const result = await UserServices.createUserIntoDB(req.body.users);
-    res.status(200).json({
-      success: true,
-      message: 'User created successfully',
-      data: result,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
+const createUser: RequestHandler = catchAsync(async (req, res) => {
+  const result = await UserServices.createUserIntoDB(req.body.users);
+  res.status(200).json({
+    success: true,
+    message: 'User created successfully',
+    data: result,
+  });
+});
 
 const getAllUser: RequestHandler = async (req, res) => {
   try {
@@ -36,8 +35,8 @@ const getSingleUser: RequestHandler = async (req, res) => {
       message: 'User retrived successfully',
       data: result,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    throw new Error(error);
   }
 };
 
