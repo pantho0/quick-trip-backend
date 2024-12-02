@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import mongoose from 'mongoose';
 import { TCar } from './car.interface';
@@ -59,10 +60,17 @@ const returnBookedCarIntoDB = async (payload: {
   }
   const session = await mongoose.startSession();
   try {
-    await session.startTransaction();
+    session.startTransaction();
     //capture the time of booking and ending time
     const bookingTime = Number(getTheBookedCar?.startTime);
     const bookingEndTime = Number(endTime);
+    //check if the booking time is greater than the end time
+    if (bookingTime > bookingEndTime) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Booking time is greater than the end time',
+      );
+    }
     //getting the times in seconds
     const bookingDif = bookingEndTime - bookingTime;
     // Convert seconds to hours
@@ -76,7 +84,7 @@ const returnBookedCarIntoDB = async (payload: {
     //getting the price per hour
     const pricePerHour = getCarInfo?.pricePerHour;
     //calculating the price
-    const price = bookingDifHours * (pricePerHour as number);
+    const price = (bookingDifHours * (pricePerHour as number)).toFixed(2);
     //update the price now
     const uptadePrice = await Booking.findByIdAndUpdate(
       bookingId,
@@ -94,10 +102,10 @@ const returnBookedCarIntoDB = async (payload: {
     await session.commitTransaction();
     await session.endSession();
     return uptadePrice;
-  } catch (error) {
+  } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
-    throw new AppError(httpStatus.BAD_REQUEST, 'Car return failed');
+    throw new AppError(httpStatus.BAD_REQUEST, error);
   }
 };
 
