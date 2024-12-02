@@ -18,6 +18,11 @@ router.patch(
   validateRequest(CarValidations.updateCarValidationSchema),
   CarControllers.updateCar,
 );
+router.put(
+  '/return',
+  validateRequest(CarValidations.carReturnValidationSchema),
+  CarControllers.returnCar,
+);
 router.delete('/:id', CarControllers.deleteCar);
 
 export const CarRoutes = router;

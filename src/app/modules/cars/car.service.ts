@@ -4,6 +4,7 @@ import { TCar } from './car.interface';
 import { Car } from './car.model';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
+import { Booking } from '../booking/booking.model';
 
 const createCarIntoDB = async (payload: TCar) => {
   const result = await Car.create(payload);
@@ -46,10 +47,65 @@ const deleteCarFromDB = async (id: string) => {
   return result;
 };
 
+const returnBookedCarIntoDB = async (payload: {
+  bookingId: string;
+  endTime: string;
+}) => {
+  const { bookingId, endTime } = payload;
+  //finding out the booking
+  const getTheBookedCar = await Booking.findById({ _id: bookingId });
+  if (!getTheBookedCar) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
+  }
+  const session = await mongoose.startSession();
+  try {
+    await session.startTransaction();
+    //capture the time of booking and ending time
+    const bookingTime = Number(getTheBookedCar?.startTime);
+    const bookingEndTime = Number(endTime);
+    //getting the times in seconds
+    const bookingDif = bookingEndTime - bookingTime;
+    // Convert seconds to hours
+    const bookingDifHours = bookingDif / 3600; // 3600 seconds in an hour
+    //finding out the car
+    const getCarInfo = await Car.findById({
+      _id: getTheBookedCar?.carId,
+    })
+      .select('pricePerHour')
+      .session(session);
+    //getting the price per hour
+    const pricePerHour = getCarInfo?.pricePerHour;
+    //calculating the price
+    const price = bookingDifHours * (pricePerHour as number);
+    //update the price now
+    const uptadePrice = await Booking.findByIdAndUpdate(
+      bookingId,
+      {
+        $set: {
+          totalCost: price,
+        },
+      },
+      {
+        new: true,
+        session,
+      },
+    );
+
+    await session.commitTransaction();
+    await session.endSession();
+    return uptadePrice;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new AppError(httpStatus.BAD_REQUEST, 'Car return failed');
+  }
+};
+
 export const CarServices = {
   createCarIntoDB,
   getAllCarsFromDB,
   getSingleCarsFromDB,
   updateCarIntoDB,
   deleteCarFromDB,
+  returnBookedCarIntoDB,
 };
