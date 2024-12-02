@@ -13,6 +13,11 @@ router.post(
 
 router.get('/', CarControllers.gatAllCars);
 router.get('/:carId', CarControllers.gatSingleCars);
-router.patch('/:id', CarControllers.updateCar);
+router.patch(
+  '/:id',
+  validateRequest(CarValidations.updateCarValidationSchema),
+  CarControllers.updateCar,
+);
+router.delete('/:id', CarControllers.deleteCar);
 
 export const CarRoutes = router;
