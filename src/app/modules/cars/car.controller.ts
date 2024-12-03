@@ -5,7 +5,7 @@ import catchAsync from '../../utils/catchAsync';
 import httpStatus from 'http-status';
 
 const createCar: RequestHandler = catchAsync(async (req, res) => {
-  const result = await CarServices.createCarIntoDB(req.body.cars);
+  const result = await CarServices.createCarIntoDB(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

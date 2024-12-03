@@ -10,7 +10,7 @@ const router = Router();
 router.post(
   '/',
   auth(User_Role.admin),
-  validateRequest(CarValidations.createCarValidationSchema),
+  // validateRequest(CarValidations.createCarValidationSchema),
   CarControllers.createCar,
 );
 
