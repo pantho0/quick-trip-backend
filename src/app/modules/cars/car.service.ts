@@ -79,9 +79,7 @@ const returnBookedCarIntoDB = async (payload: {
     //finding out the car
     const getCarInfo = await Car.findById({
       _id: getTheBookedCar?.carId,
-    })
-      .select(['pricePerHour', 'status'])
-      .session(session);
+    }).session(session);
     //getting the price per hour
     const pricePerHour = getCarInfo?.pricePerHour;
     //calculating the price
@@ -92,6 +90,7 @@ const returnBookedCarIntoDB = async (payload: {
       {
         $set: {
           totalCost: price,
+          endTime: bookingEndTime,
         },
       },
       {
@@ -102,7 +101,7 @@ const returnBookedCarIntoDB = async (payload: {
 
     // update the status of the car
     const updateCarStatus = await Car.findByIdAndUpdate(
-      { _id: getTheBookedCar._id },
+      { _id: getTheBookedCar?.carId },
       {
         $set: {
           status: 'available',
@@ -113,7 +112,6 @@ const returnBookedCarIntoDB = async (payload: {
         session,
       },
     );
-
     await session.commitTransaction();
     await session.endSession();
     return uptadePrice;

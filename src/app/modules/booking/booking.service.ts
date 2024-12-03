@@ -12,6 +12,10 @@ const createBookingIntoDB = async (payload: TBooking) => {
   if (!car) {
     throw new Error('Car not found');
   }
+  const status = car?.status;
+  if (status === 'booked') {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Car is already booked');
+  }
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
