@@ -14,7 +14,7 @@ const createCar: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-const gatAllCars: RequestHandler = catchAsync(async (req, res) => {
+const getAllCars: RequestHandler = catchAsync(async (req, res) => {
   const result = await CarServices.getAllCarsFromDB();
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -24,7 +24,7 @@ const gatAllCars: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-const gatSingleCars: RequestHandler = catchAsync(async (req, res) => {
+const getSingleCars: RequestHandler = catchAsync(async (req, res) => {
   const { carId } = req.params;
   const result = await CarServices.getSingleCarsFromDB(carId);
   sendResponse(res, {
@@ -70,8 +70,8 @@ const returnCar: RequestHandler = catchAsync(async (req, res) => {
 
 export const CarControllers = {
   createCar,
-  gatAllCars,
-  gatSingleCars,
+  getAllCars,
+  getSingleCars,
   updateCar,
   deleteCar,
   returnCar,
