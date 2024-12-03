@@ -15,11 +15,11 @@ const createBookingIntoDB = async (payload: TBooking) => {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-    const bookTheCar = await Booking.create(payload);
+    const bookTheCar = await Booking.create([payload], { session });
     const changeCarStatus = await Car.findByIdAndUpdate(
       { _id: car?._id },
       { $set: { status: 'booked' } },
-      { new: true },
+      { new: true, session },
     );
     await session.commitTransaction();
     await session.endSession();
@@ -32,7 +32,10 @@ const createBookingIntoDB = async (payload: TBooking) => {
 };
 
 const getAllBookingsFromDB = async () => {
-  const result = await Booking.find();
+  const result = await Booking.find().populate([
+    { path: 'user' },
+    { path: 'carId' },
+  ]);
   return result;
 };
 

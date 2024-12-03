@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import mongoose from 'mongoose';
@@ -79,7 +80,7 @@ const returnBookedCarIntoDB = async (payload: {
     const getCarInfo = await Car.findById({
       _id: getTheBookedCar?.carId,
     })
-      .select('pricePerHour')
+      .select(['pricePerHour', 'status'])
       .session(session);
     //getting the price per hour
     const pricePerHour = getCarInfo?.pricePerHour;
@@ -91,6 +92,20 @@ const returnBookedCarIntoDB = async (payload: {
       {
         $set: {
           totalCost: price,
+        },
+      },
+      {
+        new: true,
+        session,
+      },
+    );
+
+    // update the status of the car
+    const updateCarStatus = await Car.findByIdAndUpdate(
+      { _id: getTheBookedCar._id },
+      {
+        $set: {
+          status: 'available',
         },
       },
       {
