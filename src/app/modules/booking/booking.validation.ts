@@ -21,7 +21,6 @@ const isoDateTimeSchema = z
 const bookingValidationSchema = z.object({
   body: z.object({
     date: isoDateTimeSchema,
-    user: z.string().nonempty(),
     carId: z.string().nonempty(),
     startTime: isoDateTimeSchema,
     endTime: z

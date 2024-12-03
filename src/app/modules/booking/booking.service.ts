@@ -7,7 +7,13 @@ import { Booking } from './booking.model';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 
-const createBookingIntoDB = async (payload: TBooking) => {
+const createBookingIntoDB = async (userId: string, payload: TBooking) => {
+  const bookingInfo = {
+    carId: payload.carId,
+    date: payload.date,
+    startTime: payload.startTime,
+    user: userId,
+  };
   const car = await Car.findById({ _id: payload?.carId });
   if (!car) {
     throw new Error('Car not found');
@@ -19,7 +25,7 @@ const createBookingIntoDB = async (payload: TBooking) => {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-    const bookTheCar = await Booking.create([payload], { session });
+    const bookTheCar = await Booking.create([bookingInfo], { session });
     const changeCarStatus = await Car.findByIdAndUpdate(
       { _id: car?._id },
       { $set: { status: 'booked' } },
@@ -35,8 +41,8 @@ const createBookingIntoDB = async (payload: TBooking) => {
   }
 };
 
-const getAllBookingsFromDB = async () => {
-  const result = await Booking.find().populate([
+const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
+  const result = await Booking.find(query).populate([
     { path: 'user' },
     { path: 'carId' },
   ]);

@@ -5,7 +5,8 @@ import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
 
 const createBooking: RequestHandler = catchAsync(async (req, res) => {
-  const result = await BookingServices.createBookingIntoDB(req.body);
+  const { userId } = req.user;
+  const result = await BookingServices.createBookingIntoDB(userId, req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -15,7 +16,7 @@ const createBooking: RequestHandler = catchAsync(async (req, res) => {
 });
 
 const getAllBooking: RequestHandler = catchAsync(async (req, res) => {
-  const result = await BookingServices.getAllBookingsFromDB();
+  const result = await BookingServices.getAllBookingsFromDB(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
