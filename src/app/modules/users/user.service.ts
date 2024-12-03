@@ -1,10 +1,4 @@
-import { TUser } from './user.interface';
 import { User } from './user.model';
-
-const createUserIntoDB = async (payload: TUser) => {
-  const result = await User.create(payload);
-  return result;
-};
 
 const getAllUserFromDB = async () => {
   const result = await User.find();
@@ -17,7 +11,6 @@ const getSingleUserFromDB = async (userEmail: string) => {
 };
 
 export const UserServices = {
-  createUserIntoDB,
   getAllUserFromDB,
   getSingleUserFromDB,
 };

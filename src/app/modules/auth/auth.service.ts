@@ -4,6 +4,12 @@ import { User } from '../users/user.model';
 import { TLoginUser } from './auth.Interface';
 import { createToken } from './auth.util';
 import config from '../../config';
+import { TUser } from '../users/user.interface';
+
+const signUp = async (payload: TUser) => {
+  const result = await User.create(payload);
+  return result;
+};
 
 const loginUser = async (payload: TLoginUser) => {
   const user = await User.findOne({ email: payload?.email }).select(
@@ -35,12 +41,20 @@ const loginUser = async (payload: TLoginUser) => {
     config.jwt_refresh_expires as string,
   );
 
+  const userData = {
+    name: user?.name,
+    email: user?.email,
+    role: user?.role,
+  };
+
   return {
-    accessToken,
+    userData,
+    token: accessToken,
     refreshToken,
   };
 };
 
 export const AuthServices = {
   loginUser,
+  signUp,
 };
