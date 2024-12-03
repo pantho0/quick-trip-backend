@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import mongoose from 'mongoose';
 import { TCar } from './car.interface';
 import { Car } from './car.model';
