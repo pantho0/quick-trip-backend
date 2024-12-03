@@ -43,7 +43,13 @@ const getAllBookingsFromDB = async () => {
   return result;
 };
 
+const getMyBookingsFromDB = async (userId: string) => {
+  const result = await Booking.findOne({ user: userId });
+  return result;
+};
+
 export const BookingServices = {
   createBookingIntoDB,
   getAllBookingsFromDB,
+  getMyBookingsFromDB,
 };
