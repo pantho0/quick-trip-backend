@@ -8,20 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-/* eslint-disable no-console */
-const mongoose_1 = __importDefault(require("mongoose"));
-const app_1 = __importDefault(require("./app"));
-const config_1 = __importDefault(require("./app/config"));
-function main() {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield mongoose_1.default.connect(config_1.default.db_url);
-        app_1.default.listen(config_1.default.port, () => {
-            console.log(`QuickTrip Rentals is on port  ${config_1.default.port}`);
-        });
+const validateRequest = (schema) => {
+    return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const parsedData = yield schema.parseAsync({
+                body: req.body,
+                cookies: req.cookies,
+            });
+            req.body = parsedData.body;
+            next();
+        }
+        catch (error) {
+            next(error);
+        }
     });
-}
-main();
+};
+exports.default = validateRequest;

@@ -12,16 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-/* eslint-disable no-console */
-const mongoose_1 = __importDefault(require("mongoose"));
-const app_1 = __importDefault(require("./app"));
-const config_1 = __importDefault(require("./app/config"));
-function main() {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield mongoose_1.default.connect(config_1.default.db_url);
-        app_1.default.listen(config_1.default.port, () => {
-            console.log(`QuickTrip Rentals is on port  ${config_1.default.port}`);
-        });
+const sendResponse_1 = __importDefault(require("../utils/sendResponse"));
+const http_status_1 = __importDefault(require("http-status"));
+const notFound = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    return (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.NOT_FOUND,
+        success: false,
+        message: 'Route not found',
+        data: null,
     });
-}
-main();
+});
+exports.default = notFound;
