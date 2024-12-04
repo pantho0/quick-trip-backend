@@ -15,7 +15,7 @@ app.use(
   }),
 );
 
-app.use('/api/v1/', router);
+app.use('/api', router);
 app.get('/', (req, res) => {
   res.send('Welcome to QuickTrip Rentals 🚘🏃‍♀️');
 });
