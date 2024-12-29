@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import httpStatus from 'http-status';
 import AppError from '../errors/AppError';
 import { TUserRole } from '../modules/users/user.interface';
@@ -14,13 +16,16 @@ const auth = (...requiredRoles: TUserRole[]) => {
     }
 
     //checking is the token valid or not
-    const decoded = jwt.verify(
-      token,
-      config.jwt_access_secret as string,
-    ) as JwtPayload;
-
-    const { userId, role } = decoded;
-
+    let decoded;
+    try {
+      decoded = jwt.verify(
+        token,
+        config.jwt_access_secret as string,
+      ) as JwtPayload;
+    } catch (error: any) {
+      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
+    }
+    const { userId, role } = decoded as JwtPayload;
     //checking is the user exists or not
     const user = await User.findById({ _id: userId });
     if (!user) {

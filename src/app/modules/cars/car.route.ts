@@ -14,7 +14,7 @@ router.post(
   CarControllers.createCar,
 );
 
-router.get('/', CarControllers.getAllCars);
+router.get('/', auth(User_Role.admin), CarControllers.getAllCars);
 router.get('/:carId', CarControllers.getSingleCars);
 router.patch(
   '/:id',

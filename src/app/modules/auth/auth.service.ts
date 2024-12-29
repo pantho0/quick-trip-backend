@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { User } from '../users/user.model';
 import { TLoginUser } from './auth.Interface';
-import { createToken } from './auth.util';
+import { createToken, verifyToken } from './auth.util';
 import config from '../../config';
 import { TUser } from '../users/user.interface';
 
@@ -41,20 +41,50 @@ const loginUser = async (payload: TLoginUser) => {
     config.jwt_refresh_expires as string,
   );
 
-  const userData = {
-    name: user?.name,
-    email: user?.email,
-    role: user?.role,
-  };
-
   return {
-    userData,
     token: accessToken,
     refreshToken,
+  };
+};
+
+const refreshToken = async (token: string) => {
+  // checking if the given token is valid
+  const decoded = verifyToken(token);
+
+  const { userId } = decoded;
+
+  const user = await User.findOne({ _id: userId });
+
+  // checking if the user is exist
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
+  }
+  // checking if the user is already deleted
+  const isDeleted = user?.isDeleted;
+
+  if (isDeleted) {
+    throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted !');
+  }
+
+  const jwtPayload = {
+    userId: user.id,
+    role: user.role,
+  };
+
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires as string,
+  );
+
+  return {
+    token: accessToken,
   };
 };
 
 export const AuthServices = {
   loginUser,
   signUp,
+  refreshToken,
 };
