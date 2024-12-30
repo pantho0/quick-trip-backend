@@ -24,7 +24,9 @@ const getAllCarsFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await carsQuery.modelQuery;
-  return result;
+  const meta = await carsQuery.countTotal();
+
+  return { result, meta };
 
   // const queryObj = { ...query };
   // const searchableFields = ['name', 'color', 'status', 'features'];
