@@ -20,7 +20,8 @@ const getAllCars: RequestHandler = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Cars are retrived successfully',
-    data: result,
+    data: result.result,
+    meta: result.meta,
   });
 });
 
