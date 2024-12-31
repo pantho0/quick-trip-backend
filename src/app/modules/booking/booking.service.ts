@@ -6,6 +6,7 @@ import { TBooking } from './booking.interface';
 import { Booking } from './booking.model';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
+import { parseISO } from 'date-fns';
 
 const createBookingIntoDB = async (userId: string, payload: TBooking) => {
   const bookingInfo = {
