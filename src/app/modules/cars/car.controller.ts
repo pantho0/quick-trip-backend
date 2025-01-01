@@ -5,12 +5,14 @@ import catchAsync from '../../utils/catchAsync';
 import httpStatus from 'http-status';
 
 const createCar: RequestHandler = catchAsync(async (req, res) => {
+  console.log(req.file);
+
   const result = await CarServices.createCarIntoDB(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Car created successfully',
-    data: result,
+    data: null,
   });
 });
 
