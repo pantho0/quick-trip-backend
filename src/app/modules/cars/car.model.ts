@@ -7,6 +7,9 @@ const carSchema = new Schema<TCar>(
       type: String,
       required: [true, 'Name is required'],
     },
+    images: {
+      type: String,
+    },
     description: {
       type: String,
       required: [true, 'Description is required'],

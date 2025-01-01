@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -10,8 +11,15 @@ import { Booking } from '../booking/booking.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { searchableFields } from './car.constant';
 import { differenceInSeconds, parseISO } from 'date-fns';
+import { uploadImage } from '../../utils/uploadImage';
 
-const createCarIntoDB = async (payload: TCar) => {
+const createCarIntoDB = async (file: any, payload: TCar) => {
+  if (file) {
+    const imageName = `carimg-${payload?.name}`;
+    const path = file?.path;
+    const imageUpload = await uploadImage(imageName, path);
+    payload.images = imageUpload?.secure_url as string;
+  }
   const result = await Car.create(payload);
   return result;
 };
@@ -113,81 +121,6 @@ const deleteCarFromDB = async (id: string) => {
 
   return result;
 };
-
-// const returnBookedCarIntoDB = async (payload: {
-//   bookingId: string;
-//   endTime: string;
-// }) => {
-//   const { bookingId, endTime } = payload;
-//   //finding out the booking
-//   const getTheBookedCar = await Booking.findById({ _id: bookingId });
-//   if (!getTheBookedCar) {
-//     throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
-//   }
-//   const session = await mongoose.startSession();
-//   try {
-//     session.startTransaction();
-//     //capture the time of booking and ending time
-//     const bookingTime = Number(getTheBookedCar?.startTime);
-//     const bookingEndTime = Number(endTime);
-//     //check if the booking time is greater than the end time
-//     if (bookingTime > bookingEndTime) {
-//       throw new AppError(
-//         httpStatus.BAD_REQUEST,
-//         'End time should be after than the booking time',
-//       );
-//     }
-//     //getting the times in seconds
-//     const bookingDif = bookingEndTime - bookingTime;
-//     console.log(bookingDif);
-//     // Convert seconds to hours
-//     // const bookingDifHours = bookingDif / 3600000; // 3600 seconds in an hour
-//     // console.log(bookingDifHours);
-//     //finding out the car
-//     const getCarInfo = await Car.findById({
-//       _id: getTheBookedCar?.carId,
-//     }).session(session);
-//     //getting the price per hour
-//     const pricePerHour = getCarInfo?.pricePerHour;
-//     //calculating the price
-//     const price = (bookingDif * (pricePerHour as number)).toFixed(2);
-//     //update the price now
-//     const uptadePrice = await Booking.findByIdAndUpdate(
-//       bookingId,
-//       {
-//         $set: {
-//           totalCost: price,
-//           endTime: bookingEndTime,
-//         },
-//       },
-//       {
-//         new: true,
-//         session,
-//       },
-//     );
-
-//     // update the status of the car
-//     const updateCarStatus = await Car.findByIdAndUpdate(
-//       { _id: getTheBookedCar?.carId },
-//       {
-//         $set: {
-//           status: 'available',
-//         },
-//       },
-//       {
-//         new: true,
-//         session,
-//       },
-//     );
-//     await session.commitTransaction();
-//     await session.endSession();
-//     return uptadePrice;
-//   } catch (error: any) {
-//     await session.abortTransaction();
-//     await session.endSession();
-//     throw new AppError(httpStatus.BAD_REQUEST, error);
-//   }
-// };
 
 const returnBookedCarIntoDB = async (payload: {
   bookingId: string;

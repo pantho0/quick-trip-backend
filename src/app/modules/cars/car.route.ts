@@ -1,16 +1,22 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { CarControllers } from './car.controller';
 import validateRequest from '../../middlewares/validateRequest';
 import { CarValidations } from './car.validation';
 import { User_Role } from '../users/user.const';
 import auth from '../../middlewares/auth';
+import { upload } from '../../utils/uploadImage';
 
 const router = Router();
 
 router.post(
   '/',
   auth(User_Role.admin),
-  // validateRequest(CarValidations.createCarValidationSchema),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
+  validateRequest(CarValidations.createCarValidationSchema),
   CarControllers.createCar,
 );
 
