@@ -20,7 +20,7 @@ router.post(
   CarControllers.createCar,
 );
 
-router.get('/', auth(User_Role.admin), CarControllers.getAllCars);
+router.get('/', CarControllers.getAllCars);
 router.get('/:carId', CarControllers.getSingleCars);
 router.patch(
   '/:id',

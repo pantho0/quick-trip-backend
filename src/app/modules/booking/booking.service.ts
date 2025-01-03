@@ -51,7 +51,7 @@ const getAllBookingsFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getMyBookingsFromDB = async (userId: string) => {
-  const result = await Booking.findOne({ user: userId });
+  const result = await Booking.find({ user: userId });
   return result;
 };
 
