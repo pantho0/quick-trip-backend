@@ -39,7 +39,7 @@ const getSingleCars: RequestHandler = catchAsync(async (req, res) => {
 const updateCar: RequestHandler = catchAsync(async (req, res) => {
   const { id } = req.params;
   const payload = req.body;
-  const result = await CarServices.updateCarIntoDB(id, payload);
+  const result = await CarServices.updateCarIntoDB(id, payload, req.file);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

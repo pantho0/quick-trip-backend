@@ -25,6 +25,11 @@ router.get('/:carId', CarControllers.getSingleCars);
 router.patch(
   '/:id',
   auth(User_Role.admin),
+  upload.single('file'),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   validateRequest(CarValidations.updateCarValidationSchema),
   CarControllers.updateCar,
 );

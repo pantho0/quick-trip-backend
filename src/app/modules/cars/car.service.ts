@@ -96,7 +96,17 @@ const getSingleCarsFromDB = async (carId: string) => {
   return result;
 };
 
-const updateCarIntoDB = async (id: string, payload: Partial<TCar>) => {
+const updateCarIntoDB = async (
+  id: string,
+  payload: Partial<TCar>,
+  file: any,
+) => {
+  if (file) {
+    const imageName = `carimg-${payload?.name}`;
+    const path = file?.path;
+    const imageUpload = await uploadImage(imageName, path);
+    payload.images = imageUpload?.secure_url as string;
+  }
   const result = await Car.findByIdAndUpdate(
     id,
     {
