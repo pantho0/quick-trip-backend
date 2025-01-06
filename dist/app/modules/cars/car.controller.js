@@ -18,7 +18,7 @@ const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const http_status_1 = __importDefault(require("http-status"));
 const createCar = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield car_service_1.CarServices.createCarIntoDB(req.body);
+    const result = yield car_service_1.CarServices.createCarIntoDB(req.file, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -27,12 +27,13 @@ const createCar = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
     });
 }));
 const getAllCars = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield car_service_1.CarServices.getAllCarsFromDB();
+    const result = yield car_service_1.CarServices.getAllCarsFromDB(req === null || req === void 0 ? void 0 : req.query);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'Cars are retrived successfully',
-        data: result,
+        data: result.result,
+        meta: result.meta,
     });
 }));
 const getSingleCars = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -48,7 +49,7 @@ const getSingleCars = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
 const updateCar = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const payload = req.body;
-    const result = yield car_service_1.CarServices.updateCarIntoDB(id, payload);
+    const result = yield car_service_1.CarServices.updateCarIntoDB(id, payload, req.file);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

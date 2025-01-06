@@ -11,6 +11,18 @@ export interface TUser {
   isDeleted: boolean;
 }
 
+export type TUserResponse = {
+  _id: string;
+  password: string;
+  name: string;
+  email: string;
+  role: string;
+  phone: string;
+  address: string;
+  isDeleted: boolean;
+  __v: number;
+};
+
 export interface UserModel extends Model<TUser> {
   isPasswordMatched(
     plainTextPassword: string,

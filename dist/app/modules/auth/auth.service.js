@@ -37,18 +37,36 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     };
     const accessToken = (0, auth_util_1.createToken)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires);
     const refreshToken = (0, auth_util_1.createToken)(jwtPayload, config_1.default.jwt_refresh_secret, config_1.default.jwt_refresh_expires);
-    const userData = {
-        name: user === null || user === void 0 ? void 0 : user.name,
-        email: user === null || user === void 0 ? void 0 : user.email,
-        role: user === null || user === void 0 ? void 0 : user.role,
-    };
     return {
-        userData,
         token: accessToken,
         refreshToken,
+    };
+});
+const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    // checking if the given token is valid
+    const decoded = (0, auth_util_1.verifyToken)(token);
+    const { userId } = decoded;
+    const user = yield user_model_1.User.findOne({ _id: userId });
+    // checking if the user is exist
+    if (!user) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'This user is not found !');
+    }
+    // checking if the user is already deleted
+    const isDeleted = user === null || user === void 0 ? void 0 : user.isDeleted;
+    if (isDeleted) {
+        throw new AppError_1.default(http_status_1.default.FORBIDDEN, 'This user is deleted !');
+    }
+    const jwtPayload = {
+        userId: user.id,
+        role: user.role,
+    };
+    const accessToken = (0, auth_util_1.createToken)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires);
+    return {
+        token: accessToken,
     };
 });
 exports.AuthServices = {
     loginUser,
     signUp,
+    refreshToken,
 };

@@ -4,7 +4,7 @@ import { User } from '../users/user.model';
 import { TLoginUser } from './auth.Interface';
 import { createToken, verifyToken } from './auth.util';
 import config from '../../config';
-import { TUser } from '../users/user.interface';
+import { TUser } from './../users/user.interface';
 
 const signUp = async (payload: TUser) => {
   const result = await User.create(payload);

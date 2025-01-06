@@ -12,6 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const http_status_1 = __importDefault(require("http-status"));
 const AppError_1 = __importDefault(require("../errors/AppError"));
 const catchAsync_1 = __importDefault(require("../utils/catchAsync"));
@@ -25,7 +27,13 @@ const auth = (...requiredRoles) => {
             throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'You are not authorized');
         }
         //checking is the token valid or not
-        const decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwt_access_secret);
+        let decoded;
+        try {
+            decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwt_access_secret);
+        }
+        catch (error) {
+            throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'You are not authorized');
+        }
         const { userId, role } = decoded;
         //checking is the user exists or not
         const user = yield user_model_1.User.findById({ _id: userId });

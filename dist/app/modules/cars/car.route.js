@@ -10,13 +10,18 @@ const validateRequest_1 = __importDefault(require("../../middlewares/validateReq
 const car_validation_1 = require("./car.validation");
 const user_const_1 = require("../users/user.const");
 const auth_1 = __importDefault(require("../../middlewares/auth"));
+const uploadImage_1 = require("../../utils/uploadImage");
 const router = (0, express_1.Router)();
-router.post('/', (0, auth_1.default)(user_const_1.User_Role.admin), 
-// validateRequest(CarValidations.createCarValidationSchema),
-car_controller_1.CarControllers.createCar);
+router.post('/', (0, auth_1.default)(user_const_1.User_Role.admin), uploadImage_1.upload.single('file'), (req, res, next) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+}, (0, validateRequest_1.default)(car_validation_1.CarValidations.createCarValidationSchema), car_controller_1.CarControllers.createCar);
 router.get('/', car_controller_1.CarControllers.getAllCars);
 router.get('/:carId', car_controller_1.CarControllers.getSingleCars);
-router.patch('/:id', (0, auth_1.default)(user_const_1.User_Role.admin), (0, validateRequest_1.default)(car_validation_1.CarValidations.updateCarValidationSchema), car_controller_1.CarControllers.updateCar);
+router.patch('/:id', (0, auth_1.default)(user_const_1.User_Role.admin), uploadImage_1.upload.single('file'), (req, res, next) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+}, (0, validateRequest_1.default)(car_validation_1.CarValidations.updateCarValidationSchema), car_controller_1.CarControllers.updateCar);
 router.put('/return', (0, auth_1.default)(user_const_1.User_Role.admin), (0, validateRequest_1.default)(car_validation_1.CarValidations.carReturnValidationSchema), car_controller_1.CarControllers.returnCar);
 router.delete('/:id', (0, auth_1.default)(user_const_1.User_Role.admin), car_controller_1.CarControllers.deleteCar);
 exports.CarRoutes = router;

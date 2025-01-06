@@ -17,7 +17,6 @@ const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const auth_service_1 = require("./auth.service");
-const config_1 = __importDefault(require("../../config"));
 const signUp = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_service_1.AuthServices.signUp(req.body.users);
     (0, sendResponse_1.default)(res, {
@@ -31,7 +30,7 @@ const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
     const result = yield auth_service_1.AuthServices.loginUser(req.body);
     const { token, refreshToken, userData } = result;
     res.cookie('refreshToken', refreshToken, {
-        secure: config_1.default.NODE_ENV === 'production',
+        secure: true,
         httpOnly: true,
         sameSite: 'none',
         maxAge: 1000 * 60 * 60 * 24 * 90,
@@ -46,7 +45,18 @@ const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
         },
     });
 }));
+const refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const refreshToken = req.cookies.refreshToken;
+    const result = yield auth_service_1.AuthServices.refreshToken(refreshToken);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Token retrived successfully',
+        data: result,
+    });
+}));
 exports.AuthControllers = {
     signUp,
     loginUser,
+    refreshToken,
 };

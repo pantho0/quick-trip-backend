@@ -58,7 +58,7 @@ const getAllBookingsFromDB = (query) => __awaiter(void 0, void 0, void 0, functi
     return result;
 });
 const getMyBookingsFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield booking_model_1.Booking.findOne({ user: userId });
+    const result = yield booking_model_1.Booking.find({ user: userId }).populate('carId');
     return result;
 });
 exports.BookingServices = {
