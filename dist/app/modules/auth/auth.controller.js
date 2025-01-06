@@ -28,7 +28,7 @@ const signUp = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0,
 }));
 const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_service_1.AuthServices.loginUser(req.body);
-    const { token, refreshToken, userData } = result;
+    const { token, refreshToken } = result;
     res.cookie('refreshToken', refreshToken, {
         secure: true,
         httpOnly: true,
@@ -40,7 +40,6 @@ const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
         success: true,
         message: 'User logged in successfully',
         data: {
-            userData,
             token,
         },
     });
