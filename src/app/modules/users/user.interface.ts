@@ -4,10 +4,10 @@ import { User_Role } from './user.const';
 export interface TUser {
   name: string;
   email: string;
-  role: string;
+  role?: string;
   password: string;
   phone: string;
-  address: string;
+  address?: string;
   isDeleted: boolean;
 }
 

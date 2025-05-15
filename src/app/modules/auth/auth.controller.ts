@@ -5,7 +5,7 @@ import { AuthServices } from './auth.service';
 import { RequestHandler } from 'express';
 
 const signUp: RequestHandler = catchAsync(async (req, res) => {
-  const result = await AuthServices.signUp(req.body.users);
+  const result = await AuthServices.signUp(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

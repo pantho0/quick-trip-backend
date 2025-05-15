@@ -18,7 +18,6 @@ const userSchema = new Schema<TUser, UserModel>({
   },
   role: {
     type: String,
-    required: true,
     default: 'user',
   },
   password: {
@@ -33,7 +32,6 @@ const userSchema = new Schema<TUser, UserModel>({
   },
   address: {
     type: String,
-    required: true,
   },
   isDeleted: {
     type: Boolean,
